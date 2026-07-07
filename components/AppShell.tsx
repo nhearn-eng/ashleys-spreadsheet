@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Sidebar } from "./Sidebar";
 import { Header } from "./Header";
+import { CrabMascot } from "./CrabMascot";
 
 export function AppShell({
   userLabel,
@@ -18,6 +19,7 @@ export function AppShell({
           <div className="mx-auto max-w-6xl">{children}</div>
         </main>
       </div>
+      <CrabMascot />
     </div>
   );
 }

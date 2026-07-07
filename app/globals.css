@@ -77,3 +77,23 @@ body {
 
 /* Compact table mode toggle */
 .compact table td, .compact table th { padding-top: 0.375rem; padding-bottom: 0.375rem; }
+
+/* --- Desk crab mascot --- */
+@keyframes crab-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+@keyframes crab-leg { 0%, 100% { transform: rotate(-6deg); } 50% { transform: rotate(10deg); } }
+@keyframes crab-eye { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-1.5px); } }
+@keyframes crab-claw { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(-9deg); } }
+@keyframes crab-pop { 0% { transform: scale(0.4) translateY(8px); opacity: 0; } 100% { transform: scale(1) translateY(0); opacity: 1; } }
+
+.crab-bob { animation: crab-bob 0.5s ease-in-out infinite; }
+.crab-leg { transform-origin: top center; animation: crab-leg 0.34s ease-in-out infinite; }
+.crab-leg-2 { animation-delay: 0.11s; }
+.crab-leg-3 { animation-delay: 0.22s; }
+.crab-eye { transform-origin: bottom center; animation: crab-eye 1.2s ease-in-out infinite; }
+.crab-claw-l { transform-origin: right center; animation: crab-claw 0.6s ease-in-out infinite; }
+.crab-claw-r { transform-origin: left center; animation: crab-claw 0.6s ease-in-out infinite 0.3s; }
+.crab-bubble { animation: crab-pop 0.28s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .crab-bob, .crab-leg, .crab-eye, .crab-claw-l, .crab-claw-r { animation: none; }
+}

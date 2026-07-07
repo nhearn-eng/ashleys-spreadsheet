@@ -15,20 +15,21 @@ import {
 } from "@/lib/actions";
 import { formatDate } from "@/lib/utils";
 
-type Prefs = { dark: boolean; compact: boolean };
+type Prefs = { dark: boolean; compact: boolean; crab: boolean };
 
 function readPrefs(): Prefs {
-  if (typeof window === "undefined") return { dark: false, compact: false };
+  const base = { dark: false, compact: false, crab: true };
+  if (typeof window === "undefined") return base;
   try {
-    return { dark: false, compact: false, ...JSON.parse(localStorage.getItem("scc-prefs") || "{}") };
+    return { ...base, ...JSON.parse(localStorage.getItem("scc-prefs") || "{}") };
   } catch {
-    return { dark: false, compact: false };
+    return base;
   }
 }
 
 export function SettingsPanel({ lastLogin }: { lastLogin: string | null }) {
   const router = useRouter();
-  const [prefs, setPrefs] = React.useState<Prefs>({ dark: false, compact: false });
+  const [prefs, setPrefs] = React.useState<Prefs>({ dark: false, compact: false, crab: true });
   // Load persisted prefs after mount (deterministic SSR output avoids a mismatch).
   React.useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -39,7 +40,11 @@ export function SettingsPanel({ lastLogin }: { lastLogin: string | null }) {
     setPrefs((p) => {
       const next = { ...p, [key]: !p[key] };
       localStorage.setItem("scc-prefs", JSON.stringify(next));
-      document.documentElement.classList.toggle(key, next[key]);
+      if (key === "crab") {
+        window.dispatchEvent(new Event("scc-crab-changed"));
+      } else {
+        document.documentElement.classList.toggle(key, next[key]);
+      }
       return next;
     });
   }
@@ -151,6 +156,12 @@ export function SettingsPanel({ lastLogin }: { lastLogin: string | null }) {
             description="Tighter row spacing for dense data."
             checked={prefs.compact}
             onChange={() => togglePref("compact")}
+          />
+          <ToggleRow
+            label="Desk crab 🦀"
+            description="Let a friendly crab scuttle across the screen now and then."
+            checked={prefs.crab}
+            onChange={() => togglePref("crab")}
           />
         </div>
       </SectionCard>
