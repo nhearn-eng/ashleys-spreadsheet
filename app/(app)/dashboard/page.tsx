@@ -5,6 +5,7 @@ import { getDashboardData } from "@/lib/reportUtils";
 import { MetricCard } from "@/components/MetricCard";
 import { SectionCard } from "@/components/SectionCard";
 import { TodayTop3, Scorecard } from "@/components/DashboardWidgets";
+import { GreetingBanner } from "@/components/GreetingBanner";
 import { WORK_BLOCKS } from "@/lib/constants";
 
 export default async function DashboardPage() {
@@ -14,6 +15,8 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-6">
+      <GreetingBanner />
+
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <MetricCard
           label="Open Issues"
