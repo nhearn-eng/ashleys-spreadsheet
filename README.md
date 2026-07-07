@@ -6,6 +6,16 @@ not a bloated enterprise CRM — built for clarity, speed, and daily usability.
 
 > Internal nickname: _"Ashley's Spreadsheet."_ App title in-product: **Sales Command Center**.
 
+## Deploy in one click
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/nhearn-eng/ashleys-spreadsheet&env=AUTH_SECRET,AUTH_USERNAME,AUTH_PASSWORD&envDescription=Session%20secret%20and%20your%20fixed%20login%20credentials&stores=%5B%7B%22type%22%3A%22postgres%22%7D%5D)
+
+The button walks you through creating a Postgres database and entering three
+environment variables. On first deploy the schema is migrated automatically and
+the login user is created from `AUTH_USERNAME` / `AUTH_PASSWORD` — no seeding or
+terminal needed. (Demo data is optional: run `npm run db:seed` against the
+production `DATABASE_URL` if you want the sample records.)
+
 ---
 
 ## What's inside
