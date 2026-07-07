@@ -16,12 +16,29 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       authorize: async (raw) => {
         const parsed = loginSchema.safeParse(raw);
         if (!parsed.success) return null;
-        const { username, password } = parsed.data;
+        const username = parsed.data.username.toLowerCase();
+        const { password } = parsed.data;
 
-        const user = await prisma.user.findUnique({
-          where: { email: username.toLowerCase() },
-        });
-        if (!user) return null;
+        let user = await prisma.user.findUnique({ where: { email: username } });
+
+        // First-run bootstrap: if no user exists yet, create one from the
+        // AUTH_USERNAME / AUTH_PASSWORD env vars. This makes a fresh Vercel
+        // deploy work with zero manual seeding — the fixed credentials come
+        // straight from the environment.
+        if (!user) {
+          const envUser = (process.env.AUTH_USERNAME ?? "").toLowerCase();
+          const envPass = process.env.AUTH_PASSWORD ?? "";
+          if (envUser && envPass && username === envUser && password === envPass) {
+            const passwordHash = await bcrypt.hash(envPass, 12);
+            user = await prisma.user.upsert({
+              where: { id: "single-user" },
+              create: { id: "single-user", email: envUser, passwordHash },
+              update: { email: envUser, passwordHash },
+            });
+          } else {
+            return null;
+          }
+        }
 
         const ok = await bcrypt.compare(password, user.passwordHash);
         if (!ok) return null;
