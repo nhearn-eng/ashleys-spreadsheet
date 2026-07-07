@@ -1,26 +1,79 @@
 @import "tailwindcss";
 
+/*
+  Sales Command Center — "old money / private members club" palette.
+  Calm neutrals, navy, cream, warm gray, muted sage green.
+  Tailwind v4: colors declared here become utilities (bg-navy, text-sage, ...).
+*/
+@theme {
+  --color-navy: #1e2f4d;
+  --color-navy-dark: #16233b;
+  --color-navy-soft: #2a3f63;
+
+  --color-cream: #f4efe4;
+  --color-parchment: #faf7f0;
+
+  --color-sage: #5c7161;
+  --color-sage-dark: #43584a;
+  --color-sage-soft: #e8ede7;
+
+  --color-warmgray: #7a766e;
+  --color-warmgray-light: #9c988f;
+
+  --color-ink: #2c2b27;
+  --color-line: #e4ddd0;
+
+  --color-gold: #a98a4b;
+
+  --color-danger: #9b3b34;
+  --color-danger-soft: #f3e2e0;
+  --color-warn: #9a7b2e;
+  --color-warn-soft: #f3ecd8;
+  --color-ok: #4a6b52;
+  --color-ok-soft: #e3ece3;
+
+  --font-serif: "Iowan Old Style", "Palatino Linotype", "Palatino", "Georgia", serif;
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+  --radius-card: 14px;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f4efe4;
+  --foreground: #2c2b27;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  color-scheme: light;
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
 }
+
+.dark body {
+  background-color: #14171c;
+  color: #e7e3d8;
+}
+.dark {
+  --background: #14171c;
+  --foreground: #e7e3d8;
+}
+.dark .bg-parchment { background-color: #1b1f26 !important; }
+.dark .bg-cream { background-color: #1f242c !important; }
+.dark .bg-white { background-color: #1b1f26 !important; }
+.dark .border-line { border-color: #2c323b !important; }
+.dark .text-ink { color: #e7e3d8 !important; }
+.dark .text-warmgray { color: #a7a294 !important; }
+
+/* Serif display headings */
+.font-display { font-family: var(--font-serif); letter-spacing: -0.01em; }
+
+/* Thin, elegant scrollbars */
+* { scrollbar-width: thin; scrollbar-color: var(--color-line) transparent; }
+
+/* Compact table mode toggle */
+.compact table td, .compact table th { padding-top: 0.375rem; padding-bottom: 0.375rem; }

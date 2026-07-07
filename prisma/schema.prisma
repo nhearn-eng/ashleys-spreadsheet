@@ -1,0 +1,201 @@
+// Sales Command Center — Prisma schema
+// Lightweight single-user CRM. Records carry a `userId` string so multi-user
+// can be layered on later without a migration of ownership semantics.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  lastLogin    DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model DailyPlan {
+  id             String   @id @default(cuid())
+  userId         String
+  date           DateTime // one plan per calendar day per user
+  top1           String   @default("")
+  top2           String   @default("")
+  top3           String   @default("")
+  mustDo         String   @default("")
+  shouldDo       String   @default("")
+  wouldBeNice    String   @default("")
+  notes          String   @default("")
+  // End-of-day shutdown checklist
+  inboxProcessed     Boolean @default(false)
+  trackerUpdated     Boolean @default(false)
+  prospectsUpdated   Boolean @default(false)
+  crmUpdated         Boolean @default(false)
+  tomorrowTop3       Boolean @default(false)
+  expensesChecked    Boolean @default(false)
+  // Editable dashboard scorecard {key: {goal, actual}}
+  scorecard      Json?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@unique([userId, date])
+  @@index([userId])
+}
+
+model CustomerIssue {
+  id         String   @id @default(cuid())
+  userId     String
+  dateOpened DateTime? @default(now())
+  customer   String
+  contact    String   @default("")
+  issue      String
+  priority   String   @default("Medium") // High | Medium | Low
+  waitingOn  String   @default("")
+  nextAction String   @default("")
+  dueDate    DateTime?
+  status     String   @default("Open") // Open | Waiting on Customer | Waiting on Trade | Escalated | Closed
+  notes      String   @default("")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model Prospect {
+  id            String   @id @default(cuid())
+  userId        String
+  company       String
+  industry      String   @default("")
+  contact       String   @default("")
+  phone         String   @default("")
+  email         String   @default("")
+  lastContact   DateTime?
+  nextFollowUp  DateTime?
+  lastTouchpoint String  @default("")
+  status        String   @default("Researching")
+  notes         String   @default("")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model Customer {
+  id           String   @id @default(cuid())
+  userId       String
+  customer     String
+  mainContact  String   @default("")
+  phone        String   @default("")
+  email        String   @default("")
+  tradeLane    String   @default("")
+  annualVolume String   @default("")
+  lastMeeting  DateTime?
+  nextMeeting  DateTime?
+  notes        String   @default("")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model MarketIntelligence {
+  id                String   @id @default(cuid())
+  userId            String
+  dateAnnounced     DateTime?
+  trade             String   @default("")
+  surchargeType     String   @default("GRI")
+  amount            String   @default("")
+  effectiveDate     DateTime?
+  expirationDate    DateTime?
+  customersImpacted String   @default("")
+  actionRequired    String   @default("")
+  status            String   @default("Need Review")
+  namedAccountImpact String  @default("")
+  talkingPoints     String   @default("")
+  notes             String   @default("")
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model Opportunity {
+  id          String   @id @default(cuid())
+  userId      String
+  customer    String
+  trade       String   @default("")
+  opportunity String
+  trigger     String   @default("")
+  action      String   @default("")
+  dueDate     DateTime?
+  status      String   @default("Open")
+  notes       String   @default("")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model MeetingLog {
+  id              String   @id @default(cuid())
+  userId          String
+  date            DateTime? @default(now())
+  customer        String
+  contact         String   @default("")
+  meetingType     String   @default("Call")
+  discussion      String   @default("")
+  followUpNeeded  Boolean  @default(false)
+  followUpDueDate DateTime?
+  crmUpdated      Boolean  @default(false)
+  notes           String   @default("")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model WeeklyPriority {
+  id        String   @id @default(cuid())
+  userId    String
+  task      String
+  category  String   @default("Customer")
+  dueDate   DateTime?
+  status    String   @default("Not Started")
+  notes     String   @default("")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model MarketTheme {
+  id                String   @id @default(cuid())
+  userId            String
+  month             String   // e.g. "2026-07"
+  blankSailings     String   @default("")
+  capacity          String   @default("")
+  spotRateDirection String   @default("")
+  equipmentSituation String  @default("")
+  keyCustomerRisks  String   @default("")
+  talkingPoints     String   @default("")
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@unique([userId, month])
+  @@index([userId])
+}
+
+model ReportExportLog {
+  id         String   @id @default(cuid())
+  userId     String
+  reportType String
+  dateRange  String   @default("")
+  generatedAt DateTime @default(now())
+
+  @@index([userId])
+}
