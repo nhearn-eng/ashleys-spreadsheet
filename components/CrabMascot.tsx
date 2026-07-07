@@ -19,7 +19,29 @@ const QUIPS = [
   "Where to next? Everywhere!",
 ];
 
+// The crab gets… insecure. Jealous-boyfriend energy, aimed at the app's own data.
+const PARANOID_QUIPS = [
+  "who you on the phone to? 👀",
+  "and what exactly are you wearing right now?",
+  "who's 'Marcus' in your meeting log?? explain.",
+  "you were on the Prospects tab. who is she.",
+  "why'd it take you 3 seconds to click that?",
+  "you added a new customer… without telling me?",
+  "why are you 'Waiting on Customer' and not waiting on ME 😔",
+  "define 'active customer'. define it.",
+  "who are you meeting 'In Person'?? i'm right here.",
+  "you've been on Reporting Portal a while. reporting to WHO.",
+  "i saw you hover over Log Out. going somewhere?",
+  "who gave you that GRI announcement. was it a man.",
+  "why do you need 'follow-ups' with other people 😤",
+  "you closed the tab yesterday. where were you.",
+  "'meeting scheduled'?? scheduled with WHOM.",
+  "why is your inbox at zero. who'd you reply to.",
+];
+
 const SPEED = 0.17; // px per ms
+const PARANOID_MIN = 480_000; // 8 min
+const PARANOID_MAX = 600_000; // 10 min
 
 function prefEnabled(): boolean {
   if (typeof window === "undefined") return true;
@@ -83,6 +105,7 @@ export function CrabMascot() {
   const timers = React.useRef<number[]>([]);
   const [bubble, setBubble] = React.useState<string | null>(null);
   const [bubbleBelow, setBubbleBelow] = React.useState(false);
+  const [sus, setSus] = React.useState(false);
   const [visible, setVisible] = React.useState(true);
 
   React.useEffect(() => {
@@ -100,7 +123,10 @@ export function CrabMascot() {
       timers.current = [];
     };
     const randomQuip = () => QUIPS[Math.floor(Math.random() * QUIPS.length)];
+    const randomParanoid = () =>
+      PARANOID_QUIPS[Math.floor(Math.random() * PARANOID_QUIPS.length)];
 
+    const paranoidPending = { current: false };
     let lastDir = 1;
 
     // Roam: pick a nearby-ish random point, walk there, pause, sometimes speak, repeat forever.
@@ -131,7 +157,18 @@ export function CrabMascot() {
 
       later(() => {
         const pause = 250 + Math.random() * 1400;
-        if (Math.random() < 0.28) {
+        if (paranoidPending.current) {
+          // He stops and interrogates you. Holds the bubble longer.
+          paranoidPending.current = false;
+          setBubbleBelow(ty < 150);
+          setSus(true);
+          setBubble(randomParanoid());
+          later(() => {
+            setBubble(null);
+            setSus(false);
+          }, 6000);
+          later(roam, 6300);
+        } else if (Math.random() < 0.28) {
           setBubbleBelow(ty < 150);
           setBubble(randomQuip());
           later(() => setBubble(null), 3200);
@@ -140,6 +177,13 @@ export function CrabMascot() {
           later(roam, pause);
         }
       }, dur + 30);
+    }
+
+    function scheduleParanoid() {
+      later(() => {
+        paranoidPending.current = true;
+        scheduleParanoid();
+      }, PARANOID_MIN + Math.random() * (PARANOID_MAX - PARANOID_MIN));
     }
 
     function start() {
@@ -152,6 +196,7 @@ export function CrabMascot() {
       el.style.transform = `translate(${posRef.current.x}px, ${posRef.current.y}px)`;
       void el.offsetWidth;
       later(roam, 900);
+      scheduleParanoid();
     }
 
     function refreshEnabled() {
@@ -188,7 +233,11 @@ export function CrabMascot() {
             {bubbleBelow && (
               <div className="mx-auto -mb-1 h-3 w-3 rotate-45 border-l border-t border-line bg-white" />
             )}
-            <div className="rounded-2xl border border-line bg-white px-3.5 py-2 text-sm text-ink shadow-lg">
+            <div
+              className={`rounded-2xl bg-white px-3.5 py-2 text-sm text-ink shadow-lg ${
+                sus ? "border-2 border-danger/50 font-medium" : "border border-line"
+              }`}
+            >
               {bubble}
             </div>
             {!bubbleBelow && (
