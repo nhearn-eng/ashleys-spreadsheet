@@ -190,6 +190,35 @@ model MarketTheme {
   @@index([userId])
 }
 
+model RateSnapshot {
+  id        String   @id @default(cuid())
+  userId    String
+  tradeLane String
+  amount    Float // spot rate, $/FEU
+  date      DateTime @default(now())
+  notes     String   @default("")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model MarketInsight {
+  id        String   @id @default(cuid())
+  userId    String
+  date      DateTime? @default(now())
+  title     String
+  tradeLane String   @default("")
+  category  String   @default("Rates")
+  sentiment String   @default("Steady") // Up | Steady | Down
+  sourceUrl String   @default("")
+  notes     String   @default("")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
 model ReportExportLog {
   id         String   @id @default(cuid())
   userId     String

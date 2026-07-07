@@ -10,6 +10,7 @@ import {
   marketThemeSchema,
   scorecardSchema,
   passwordChangeSchema,
+  rateSnapshotSchema,
 } from "./validations";
 
 export type ActionResult =
@@ -142,6 +143,27 @@ export async function saveMarketTheme(data: Record<string, unknown>): Promise<Ac
     update: rest,
   });
   revalidatePath("/market-intelligence");
+  return { ok: true };
+}
+
+// --- Rate snapshots (Shipping Market Insights) -----------------------------
+
+export async function saveRateSnapshot(data: Record<string, unknown>): Promise<ActionResult> {
+  const userId = await requireUserId();
+  const parsed = rateSnapshotSchema.safeParse(data);
+  if (!parsed.success) return { ok: false, errors: parsed.error.flatten().fieldErrors };
+  const { date, ...rest } = parsed.data;
+  await prisma.rateSnapshot.create({
+    data: { userId, ...rest, ...(date ? { date } : {}) },
+  });
+  revalidatePath("/market-insights");
+  return { ok: true };
+}
+
+export async function deleteRateSnapshot(id: string): Promise<ActionResult> {
+  const userId = await requireUserId();
+  await prisma.rateSnapshot.deleteMany({ where: { id, userId } });
+  revalidatePath("/market-insights");
   return { ok: true };
 }
 

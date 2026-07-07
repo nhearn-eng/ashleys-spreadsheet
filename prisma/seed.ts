@@ -31,6 +31,8 @@ async function main() {
     prisma.weeklyPriority.deleteMany({ where: { userId } }),
     prisma.dailyPlan.deleteMany({ where: { userId } }),
     prisma.marketTheme.deleteMany({ where: { userId } }),
+    prisma.rateSnapshot.deleteMany({ where: { userId } }),
+    prisma.marketInsight.deleteMany({ where: { userId } }),
   ]);
 
   const data = buildSeed();
@@ -45,6 +47,8 @@ async function main() {
   await prisma.weeklyPriority.createMany({ data: withUser(data.weeklyPriorities) });
   await prisma.dailyPlan.create({ data: { ...data.dailyPlan, userId } });
   await prisma.marketTheme.create({ data: { ...data.marketTheme, userId } });
+  await prisma.rateSnapshot.createMany({ data: withUser(data.rateSnapshots) });
+  await prisma.marketInsight.createMany({ data: withUser(data.marketInsights) });
 
   console.log("✔ Seed data inserted.");
 }

@@ -87,6 +87,52 @@ export async function getDashboardData(userId: string) {
   };
 }
 
+export type RateIndex = {
+  lane: string;
+  amount: number;
+  date: Date;
+  prevAmount: number | null;
+  pct: number | null;
+  direction: "up" | "down" | "flat";
+  count: number;
+};
+
+/** Latest spot rate per trade lane plus its move vs the previous reading. */
+export async function getRateIndices(userId: string): Promise<RateIndex[]> {
+  const snaps = await prisma.rateSnapshot.findMany({
+    where: { userId },
+    orderBy: { date: "desc" },
+  });
+
+  const byLane = new Map<string, typeof snaps>();
+  for (const s of snaps) {
+    const list = byLane.get(s.tradeLane) ?? [];
+    list.push(s);
+    byLane.set(s.tradeLane, list);
+  }
+
+  const indices: RateIndex[] = [];
+  for (const [lane, list] of byLane) {
+    const latest = list[0];
+    const prev = list[1];
+    const pct =
+      prev && prev.amount ? ((latest.amount - prev.amount) / prev.amount) * 100 : null;
+    const direction =
+      pct === null ? "flat" : pct > 1 ? "up" : pct < -1 ? "down" : "flat";
+    indices.push({
+      lane,
+      amount: latest.amount,
+      date: latest.date,
+      prevAmount: prev?.amount ?? null,
+      pct,
+      direction,
+      count: list.length,
+    });
+  }
+  indices.sort((a, b) => a.lane.localeCompare(b.lane));
+  return indices;
+}
+
 function inRange(date: Date | null | undefined, from: Date, to: Date) {
   if (!date) return false;
   return date >= from && date <= to;

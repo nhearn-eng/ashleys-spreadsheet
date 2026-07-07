@@ -67,6 +67,13 @@ export const marketThemeSchema = z.object({
   talkingPoints: z.string().optional().transform((v) => v ?? ""),
 });
 
+export const rateSnapshotSchema = z.object({
+  tradeLane: z.string().trim().min(1, "Trade lane is required"),
+  amount: z.coerce.number().min(0, "Enter a rate"),
+  date: dateField,
+  notes: z.string().optional().transform((v) => v ?? ""),
+});
+
 export const scorecardSchema = z.record(
   z.string(),
   z.object({ goal: z.coerce.number().default(0), actual: z.coerce.number().default(0) })

@@ -358,6 +358,60 @@ export function buildSeed() {
     },
   };
 
+  const rateSnapshots = [
+    // Asia–USEC: trending up
+    { tradeLane: "Asia – US East Coast", amount: 3050, date: day(-21), notes: "" },
+    { tradeLane: "Asia – US East Coast", amount: 3120, date: day(-14), notes: "" },
+    { tradeLane: "Asia – US East Coast", amount: 3240, date: day(-7), notes: "GRI held." },
+    // Asia–USWC: trending down
+    { tradeLane: "Asia – US West Coast", amount: 2100, date: day(-21), notes: "" },
+    { tradeLane: "Asia – US West Coast", amount: 2060, date: day(-14), notes: "" },
+    { tradeLane: "Asia – US West Coast", amount: 2010, date: day(-7), notes: "" },
+    // N.Europe–USEC: flat
+    { tradeLane: "North Europe – US East Coast", amount: 1875, date: day(-21), notes: "" },
+    { tradeLane: "North Europe – US East Coast", amount: 1880, date: day(-14), notes: "" },
+    { tradeLane: "North Europe – US East Coast", amount: 1880, date: day(-7), notes: "" },
+  ];
+
+  const marketInsights = [
+    {
+      date: day(-1),
+      title: "Blank sailings tightening capacity on Asia–USWC ahead of peak.",
+      tradeLane: "Asia – US West Coast",
+      category: "Capacity",
+      sentiment: "Up",
+      sourceUrl: "",
+      notes: "Three announced over the next month — expect rate firming.",
+    },
+    {
+      date: day(-3),
+      title: "LA/Long Beach dwell times steady at ~4 days.",
+      tradeLane: "Asia – US West Coast",
+      category: "Ports",
+      sentiment: "Steady",
+      sourceUrl: "",
+      notes: "No congestion pressure right now.",
+    },
+    {
+      date: day(-5),
+      title: "GRI holding on Asia–USEC; spot up ~4% week-over-week.",
+      tradeLane: "Asia – US East Coast",
+      category: "Rates",
+      sentiment: "Up",
+      sourceUrl: "",
+      notes: "Good moment to pitch quarterly agreements.",
+    },
+    {
+      date: day(-8),
+      title: "BAF expected to ease next month as bunker prices soften.",
+      tradeLane: "",
+      category: "Fuel / BAF",
+      sentiment: "Down",
+      sourceUrl: "",
+      notes: "",
+    },
+  ];
+
   const marketTheme = {
     month: new Date().toISOString().slice(0, 7),
     blankSailings: "3 announced on Asia–USWC over the next month.",
@@ -378,5 +432,7 @@ export function buildSeed() {
     weeklyPriorities,
     dailyPlan,
     marketTheme,
+    rateSnapshots,
+    marketInsights,
   };
 }

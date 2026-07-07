@@ -8,6 +8,8 @@ import {
   MEETING_TYPE_OPTIONS,
   WEEKLY_CATEGORY_OPTIONS,
   WEEKLY_STATUS_OPTIONS,
+  INSIGHT_CATEGORY_OPTIONS,
+  SENTIMENT_OPTIONS,
 } from "./constants";
 
 export type FieldType =
@@ -58,7 +60,8 @@ export type PrismaModel =
   | "marketIntelligence"
   | "opportunity"
   | "meetingLog"
-  | "weeklyPriority";
+  | "weeklyPriority"
+  | "marketInsight";
 
 export interface ResourceDef {
   key: string; // route segment + identifier
@@ -265,6 +268,32 @@ export const RESOURCES: Record<string, ResourceDef> = {
       { key: "discussion", label: "Discussion", type: "truncate" },
       { key: "followUpNeeded", label: "Follow Up", type: "yesno" },
       { key: "crmUpdated", label: "CRM Updated", type: "yesno" },
+    ],
+  },
+
+  "market-insights": {
+    key: "market-insights",
+    model: "marketInsight",
+    title: "Shipping Market Insights",
+    singular: "Insight",
+    description: "What you're hearing across the market.",
+    searchKeys: ["title", "tradeLane", "category", "notes"],
+    filterField: { key: "category", label: "Category", options: INSIGHT_CATEGORY_OPTIONS },
+    defaultOrderBy: { date: "desc" },
+    fields: [
+      { name: "date", label: "Date", type: "date" },
+      { name: "category", label: "Category", type: "select", options: INSIGHT_CATEGORY_OPTIONS },
+      { name: "sentiment", label: "Direction", type: "select", options: SENTIMENT_OPTIONS },
+      { name: "tradeLane", label: "Trade Lane", type: "text" },
+      { name: "title", label: "Insight", type: "textarea", required: true, full: true },
+      { name: "sourceUrl", label: "Source URL", type: "text", full: true, placeholder: "https://…" },
+      { name: "notes", label: "Notes", type: "textarea", full: true },
+    ],
+    columns: [
+      { key: "date", label: "Date", type: "date" },
+      { key: "category", label: "Category" },
+      { key: "tradeLane", label: "Trade Lane" },
+      { key: "title", label: "Insight", type: "truncate" },
     ],
   },
 

@@ -5,6 +5,7 @@ import {
   Search,
   Users,
   Newspaper,
+  TrendingUp,
   Target,
   NotebookPen,
   ListChecks,
@@ -28,6 +29,7 @@ export const NAV_ITEMS: NavItem[] = [
   { href: "/prospects", label: "Prospect Pipeline", icon: Search },
   { href: "/customers", label: "Customer Master List", icon: Users },
   { href: "/market-intelligence", label: "Market Intelligence", icon: Newspaper },
+  { href: "/market-insights", label: "Shipping Market Insights", icon: TrendingUp },
   { href: "/opportunities", label: "Opportunity Tracker", icon: Target },
   { href: "/meetings", label: "Meeting & Visit Log", icon: NotebookPen },
   { href: "/weekly-priorities", label: "Weekly Priorities", icon: ListChecks },
@@ -99,6 +101,29 @@ export const MEETING_TYPE_OPTIONS = [
 ] as const;
 
 export const YES_NO_OPTIONS = ["Yes", "No"] as const;
+
+export const INSIGHT_CATEGORY_OPTIONS = [
+  "Rates",
+  "Capacity",
+  "Ports",
+  "Fuel / BAF",
+  "Equipment",
+  "Demand",
+  "Regulatory",
+  "Other",
+] as const;
+
+export const SENTIMENT_OPTIONS = ["Up", "Steady", "Down"] as const;
+
+// Common trade lanes offered as quick-fill when logging a rate reading.
+export const TRADE_LANES = [
+  "Asia – US East Coast",
+  "Asia – US West Coast",
+  "North Europe – US East Coast",
+  "Mediterranean – US East Coast",
+  "Asia – North Europe",
+  "Transatlantic",
+] as const;
 
 export const WEEKLY_CATEGORY_OPTIONS = [
   "Customer",
